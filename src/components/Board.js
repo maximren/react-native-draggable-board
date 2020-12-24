@@ -1,6 +1,6 @@
 import React from 'react';
 import _ from 'underscore';
-import ReactTimeout from 'react-timeout'
+import ReactTimeout from 'react-timeout';
 import Column from './Column';
 import TaskWrapper from './TaskWrapper';
 
@@ -9,14 +9,14 @@ import {
   Animated,
   ScrollView,
   Platform,
-  Dimensions
+  Dimensions,
 } from 'react-native';
 
 const { width, height } = Dimensions.get('window');
-class Board extends React.Component {
-  MAX_RANGE = 100
-  MAX_DEG = 30
-  TRESHOLD = 35
+class Board extends Component {
+  MAX_RANGE = 100;
+  MAX_DEG = 30;
+  TRESHOLD = 35;
 
   constructor(props) {
     super(props);
@@ -31,7 +31,7 @@ class Board extends React.Component {
       startingY: 0,
       x: 0,
       y: 0,
-      movingMode: false
+      movingMode: false,
     };
 
     this.panResponder = PanResponder.create({
@@ -40,11 +40,11 @@ class Board extends React.Component {
       onPanResponderTerminationRequest: () => !this.state.movingMode,
       onPanResponderMove: this.onPanResponderMove.bind(this),
       onPanResponderRelease: this.onPanResponderRelease.bind(this),
-      onPanResponderTerminate: this.onPanResponderRelease.bind(this)
+      onPanResponderTerminate: this.onPanResponderRelease.bind(this),
     });
   }
 
-  componentWillUnmount() {
+  componentDidMount() {
     this.unsubscribeFromMovingMode();
   }
 
@@ -55,32 +55,62 @@ class Board extends React.Component {
       const draggedItem = this.state.draggedItem;
       this.x = event.nativeEvent.pageX;
       this.y = event.nativeEvent.pageY;
-      const columnAtPosition = this.props.rowRepository.move(draggedItem, this.x, this.y);
+      const columnAtPosition = this.props.rowRepository.move(
+        draggedItem,
+        this.x,
+        this.y,
+      );
       if (columnAtPosition) {
-        let { scrolling, offset } = this.props.rowRepository.scrollingPosition(columnAtPosition, this.x, this.y);
+        let { scrolling, offset } = this.props.rowRepository.scrollingPosition(
+          columnAtPosition,
+          this.x,
+          this.y,
+        );
         if (this.shouldScroll(scrolling, offset, columnAtPosition)) {
           this.scroll(columnAtPosition, draggedItem, offset);
         }
-      };
+      }
 
       this.setState({
         x: leftTopCornerX,
-        y: leftTopCornerY
+        y: leftTopCornerY,
       });
       // tu:du:
-      if (gesture.moveX > gesture.x0 && (gesture.moveX + 75) > width && !this.hasBeenScroll) {
-        this.containerScrollView.scrollTo({x: this.verticalOffset + (gesture.moveX - gesture.x0 < 25 ? width - 25 : gesture.moveX - gesture.x0)});
+      if (
+        gesture.moveX > gesture.x0 &&
+        gesture.moveX + 75 > width &&
+        !this.hasBeenScroll
+      ) {
+        this.containerScrollView.scrollTo({
+          x:
+            this.verticalOffset +
+            (gesture.moveX - gesture.x0 < 25
+              ? width - 25
+              : gesture.moveX - gesture.x0),
+        });
         this.hasBeenScroll = true;
       }
-      if (gesture.moveX < gesture.x0 && gesture.moveX < 75 && !this.hasBeenScroll) {
-        this.containerScrollView.scrollTo({x: this.verticalOffset - (gesture.x0 - gesture.moveX < 25 ? width - 25 : gesture.x0 - gesture.moveX)});
+      if (
+        gesture.moveX < gesture.x0 &&
+        gesture.moveX < 75 &&
+        !this.hasBeenScroll
+      ) {
+        this.containerScrollView.scrollTo({
+          x:
+            this.verticalOffset -
+            (gesture.x0 - gesture.moveX < 25
+              ? width - 25
+              : gesture.x0 - gesture.moveX),
+        });
         this.hasBeenScroll = true;
       }
     }
   }
 
   shouldScroll(scrolling, offset, column) {
-    const placeToScroll = ((offset < 0 && column.scrollOffset() > 0) || (offset > 0 && column.scrollOffset() < column.contentHeight()));
+    const placeToScroll =
+      (offset < 0 && column.scrollOffset() > 0) ||
+      (offset > 0 && column.scrollOffset() < column.contentHeight());
 
     return scrolling && offset != 0 && placeToScroll;
   }
@@ -107,7 +137,11 @@ class Board extends React.Component {
     }
 
     this.props.rowRepository.move(draggedItem, this.x, this.y);
-    let { scrolling, offset } = this.props.rowRepository.scrollingPosition(column, this.x, this.y);
+    let { scrolling, offset } = this.props.rowRepository.scrollingPosition(
+      column,
+      this.x,
+      this.y,
+    );
     if (this.shouldScroll(scrolling, offset, column)) {
       this.props.requestAnimationFrame(() => {
         this.scroll(column, draggedItem, offset);
@@ -144,13 +178,10 @@ class Board extends React.Component {
   }
 
   rotateTo(value) {
-    Animated.spring(
-      this.state.rotate,
-      {
-        toValue: value,
-        duration: 5000
-      }
-    ).start();
+    Animated.spring(this.state.rotate, {
+      toValue: value,
+      duration: 5000,
+    }).start();
   }
 
   rotate() {
@@ -200,11 +231,11 @@ class Board extends React.Component {
         columnCallback();
         this.rotate();
       }, this.longPressDuration());
-    }
+    };
   }
 
   longPressDuration() {
-    return (Platform.OS === 'ios') ? 200 : 400;
+    return Platform.OS === 'ios' ? 200 : 300;
   }
 
   onPress(item) {
@@ -224,7 +255,7 @@ class Board extends React.Component {
       } else {
         this.endMoving();
       }
-    }
+    };
   }
 
   onScroll(event) {
@@ -241,15 +272,15 @@ class Board extends React.Component {
   movingStyle(zIndex) {
     var interpolatedRotateAnimation = this.state.rotate.interpolate({
       inputRange: [-this.MAX_RANGE, 0, this.MAX_RANGE],
-      outputRange: [`-${this.MAX_DEG}deg`, '0deg', `${this.MAX_DEG}deg`]
+      outputRange: [`-${this.MAX_DEG}deg`, '0deg', `${this.MAX_DEG}deg`],
     });
     return {
-      transform: [{rotate: interpolatedRotateAnimation}],
+      transform: [{ rotate: interpolatedRotateAnimation }],
       position: 'absolute',
       zIndex: zIndex,
       elevation: zIndex,
       top: this.state.y - this.TRESHOLD,
-      left: this.verticalOffset + this.state.x
+      left: this.verticalOffset + this.state.x,
     };
   }
 
@@ -258,7 +289,11 @@ class Board extends React.Component {
     // Without this when you drop a task it's impossible to drag it again...
     // And -1 is really needed for Android
     const zIndex = movingMode ? 1 : -1;
-    const data = { item: draggedItem, hidden: !movingMode, style: this.movingStyle(zIndex) };
+    const data = {
+      item: draggedItem,
+      hidden: !movingMode,
+      style: this.movingStyle(zIndex),
+    };
     return this.renderWrapperRow(data);
   }
 
@@ -289,12 +324,16 @@ class Board extends React.Component {
           unsubscribeFromMovingMode={this.cancelMovingSubscription.bind(this)}
         />
       );
-      return this.props.renderColumnWrapper(column.data(), column.index(), columnComponent);
+      return this.props.renderColumnWrapper(
+        column.data(),
+        column.index(),
+        columnComponent,
+      );
     });
 
     return (
       <ScrollView
-        ref={ref => this.containerScrollView = ref}
+        ref={(ref) => (this.containerScrollView = ref)}
         scrollEventThrottle={16}
         style={this.props.style}
         contentContainerStyle={this.props.contentContainerStyle}
@@ -308,7 +347,7 @@ class Board extends React.Component {
         {this.movingTask()}
         {columnWrappers}
       </ScrollView>
-    )
+    );
   }
 }
 

@@ -3,7 +3,7 @@ import React from 'react';
 import {
   View,
   // ListView,
-  FlatList
+  FlatList,
 } from 'react-native';
 
 class Column extends React.Component {
@@ -11,12 +11,16 @@ class Column extends React.Component {
     super(props);
 
     this.state = {
-      dataSource: this.dataSourceWithItems([])
+      dataSource: this.dataSourceWithItems([]),
     };
   }
 
   componentWillMount() {
-    this.props.rowRepository.addListener(this.props.column.id(), 'reload', this.reload.bind(this));
+    this.props.rowRepository.addListener(
+      this.props.column.id(),
+      'reload',
+      this.reload.bind(this),
+    );
   }
 
   reload() {
@@ -62,8 +66,11 @@ class Column extends React.Component {
 
   updateItemWithLayout(item) {
     return () => {
-      this.props.rowRepository.updateItemWithLayout(this.props.column.id(), item);
-    }
+      this.props.rowRepository.updateItemWithLayout(
+        this.props.column.id(),
+        item,
+      );
+    };
   }
 
   setColumnRef(ref) {
@@ -79,10 +86,13 @@ class Column extends React.Component {
       onPressIn: this.onPressIn(item),
       onPress: this.onPress(item),
       hidden: item.isHidden(),
-      item: item
+      item: item,
     };
     return (
-      <View ref={(ref) => this.setItemRef(item, ref)} onLayout={this.updateItemWithLayout(item)}>
+      <View
+        ref={(ref) => this.setItemRef(item, ref)}
+        onLayout={this.updateItemWithLayout(item)}
+      >
         {this.props.renderWrapperRow(props)}
       </View>
     );
@@ -102,8 +112,10 @@ class Column extends React.Component {
   endScrolling(event) {
     const currentOffset = event.nativeEvent.contentOffset.y;
     const column = this.props.rowRepository.column(this.props.column.id());
-    const scrollingDownEnded = this.scrollingDown && currentOffset >= column.scrollOffset();
-    const scrollingUpEnded = !this.scrollingDown && currentOffset <= column.scrollOffset();
+    const scrollingDownEnded =
+      this.scrollingDown && currentOffset >= column.scrollOffset();
+    const scrollingUpEnded =
+      !this.scrollingDown && currentOffset <= column.scrollOffset();
     if (scrollingDownEnded || scrollingUpEnded) {
       this.props.rowRepository.setScrollOffset(column.id(), currentOffset);
       this.props.rowRepository.updateColumnsLayoutAfterVisibilityChanged();
@@ -121,27 +133,36 @@ class Column extends React.Component {
   }
 
   onContentSizeChange(_, contentHeight) {
-    this.props.rowRepository.setContentHeight(this.props.column.id(), contentHeight);
+    this.props.rowRepository.setContentHeight(
+      this.props.column.id(),
+      contentHeight,
+    );
   }
 
   handleChangeVisibleItems(visibleItems) {
     // FYI: This is not invoken on Android.
     // I know it's document, but it just don't work
     // There is product pain and issue for that but they seems to ignore this fact
-    this.props.rowRepository.updateItemsVisibility(this.props.column.id(), visibleItems);
+    this.props.rowRepository.updateItemsVisibility(
+      this.props.column.id(),
+      visibleItems,
+    );
   }
 
   setListView(ref) {
     this.props.rowRepository.setListView(this.props.column.id(), ref);
   }
 
-  _renderItem = ({item}) => (
-    <View ref={(ref) => this.setItemRef(item, ref)} onLayout={this.updateItemWithLayout(item)}>
+  _renderItem = ({ item }) => (
+    <View
+      ref={(ref) => this.setItemRef(item, ref)}
+      onLayout={this.updateItemWithLayout(item)}
+    >
       {this.props.renderWrapperRow({
         onPressIn: this.onPressIn(item),
         onPress: this.onPress(item),
         hidden: item.isHidden(),
-        item: item
+        item: item,
       })}
     </View>
   );
@@ -151,7 +172,8 @@ class Column extends React.Component {
       <View
         style={{ flex: 1 }}
         ref={this.setColumnRef.bind(this)}
-        onLayout={this.updateColumnWithLayout.bind(this)}>
+        onLayout={this.updateColumnWithLayout.bind(this)}
+      >
         <FlatList
           data={this.dataSourceFlatlist()}
           keyExtractor={(item, index) => index.toString()}
@@ -166,23 +188,9 @@ class Column extends React.Component {
           onContentSizeChange={this.onContentSizeChange.bind(this)}
           enableEmptySections={true}
         />
-        {/* <ListView
-          dataSource={this.dataSource()}
-          ref={this.setListView.bind(this)}
-          onScroll={this.handleScroll.bind(this)}
-          scrollEventThrottle={0}
-          onMomentumScrollEnd={this.onMomentumScrollEnd.bind(this)}
-          onScrollEndDrag={this.onScrollEndDrag.bind(this)}
-          onChangeVisibleRows={this.handleChangeVisibleItems.bind(this)}
-          renderRow={this.renderWrapperRow.bind(this)}
-          scrollEnabled={!this.props.movingMode}
-          onContentSizeChange={this.onContentSizeChange.bind(this)}
-          enableEmptySections={true}
-         /> */}
       </View>
     );
   }
-};
+}
 
 export default Column;
-
