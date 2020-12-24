@@ -15,7 +15,7 @@ class Column extends React.Component {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.props.rowRepository.addListener(
       this.props.column.id(),
       'reload',
