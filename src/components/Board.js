@@ -181,6 +181,7 @@ class Board extends Component {
     Animated.spring(this.state.rotate, {
       toValue: value,
       duration: 5000,
+      useNativeDriver: true,
     }).start();
   }
 
@@ -270,7 +271,7 @@ class Board extends Component {
   }
 
   movingStyle(zIndex) {
-    var interpolatedRotateAnimation = this.state.rotate.interpolate({
+    const interpolatedRotateAnimation = this.state.rotate.interpolate({
       inputRange: [-this.MAX_RANGE, 0, this.MAX_RANGE],
       outputRange: [`-${this.MAX_DEG}deg`, '0deg', `${this.MAX_DEG}deg`],
     });
@@ -279,7 +280,7 @@ class Board extends Component {
       position: 'absolute',
       zIndex: zIndex,
       elevation: zIndex,
-      top: this.state.y - this.TRESHOLD,
+      top: this.state.y,
       left: this.verticalOffset + this.state.x,
     };
   }
