@@ -18,37 +18,33 @@ class Board extends Component {
   MAX_DEG = 30;
   TRESHOLD = 35;
 
-  constructor(props) {
-    super(props);
+  verticalOffset = 0;
+  verticalOffsetScrolling = 0;
+  hasBeenScroll = false;
 
-    this.verticalOffset = 0;
-    this.verticalOffsetScrolling = 0;
-    this.hasBeenScroll = false;
+  state = {
+    rotate: new Animated.Value(0),
+    startingX: 0,
+    startingY: 0,
+    x: 0,
+    y: 0,
+    movingMode: false,
+  };
 
-    this.state = {
-      rotate: new Animated.Value(0),
-      startingX: 0,
-      startingY: 0,
-      x: 0,
-      y: 0,
-      movingMode: false,
-    };
-
-    this.panResponder = PanResponder.create({
-      onStartShouldSetPanResponder: () => this.state.movingMode,
-      onMoveShouldSetPanResponder: () => this.state.movingMode,
-      onPanResponderTerminationRequest: () => !this.state.movingMode,
-      onPanResponderMove: this.onPanResponderMove.bind(this),
-      onPanResponderRelease: this.onPanResponderRelease.bind(this),
-      onPanResponderTerminate: this.onPanResponderRelease.bind(this),
-    });
-  }
+  panResponder = PanResponder.create({
+    onStartShouldSetPanResponder: () => this.state.movingMode,
+    onMoveShouldSetPanResponder: () => this.state.movingMode,
+    onPanResponderTerminationRequest: () => !this.state.movingMode,
+    onPanResponderMove: this.onPanResponderMove.bind(this),
+    onPanResponderRelease: this.onPanResponderRelease.bind(this),
+    onPanResponderTerminate: this.onPanResponderRelease.bind(this),
+  });
 
   componentDidMount() {
     this.unsubscribeFromMovingMode();
   }
 
-  onPanResponderMove(event, gesture, callback) {
+  onPanResponderMove(event, gesture) {
     const leftTopCornerX = this.state.startingX + gesture.dx;
     const leftTopCornerY = this.state.startingY + gesture.dy;
     if (this.state.movingMode) {
@@ -226,8 +222,8 @@ class Board extends Component {
           srcColumnId: item.columnId(),
           startingX: x,
           startingY: y,
-          x: x,
-          y: y,
+          x,
+          y,
         });
         columnCallback();
         this.rotate();
@@ -236,7 +232,7 @@ class Board extends Component {
   }
 
   longPressDuration() {
-    return Platform.OS === 'ios' ? 200 : 300;
+    return Platform.OS === 'ios' ? 1000 : 1000;
   }
 
   onPress(item) {
@@ -278,7 +274,7 @@ class Board extends Component {
     return {
       transform: [{ rotate: interpolatedRotateAnimation }],
       position: 'absolute',
-      zIndex: zIndex,
+      zIndex,
       elevation: zIndex,
       top: this.state.y,
       left: this.verticalOffset + this.state.x,
@@ -287,8 +283,6 @@ class Board extends Component {
 
   movingTask() {
     const { draggedItem, movingMode } = this.state;
-    // Without this when you drop a task it's impossible to drag it again...
-    // And -1 is really needed for Android
     const zIndex = movingMode ? 1 : -1;
     const data = {
       item: draggedItem,

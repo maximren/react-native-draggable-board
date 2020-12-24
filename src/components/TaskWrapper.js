@@ -1,17 +1,14 @@
 import React from 'react';
 
-import {
-  TouchableWithoutFeedback,
-  Animated
-} from 'react-native';
+import { TouchableWithoutFeedback, Animated } from 'react-native';
 
-class TaskWrapper extends React.Component {
+class TaskWrapper extends Component {
   render() {
     let style = [this.props.style];
-    const { item, hidden } = this.props;
+    const { hidden } = this.props;
 
     if (hidden) {
-      style.push({ opacity: 0 });
+      style = [...style, { opacity: 0 }];
     }
 
     return (
@@ -19,12 +16,10 @@ class TaskWrapper extends React.Component {
         onPressIn={this.props.onPressIn}
         onPress={this.props.onPress}
       >
-        <Animated.View style={style}>
-          {this.props.children}
-        </Animated.View>
+        <Animated.View style={style}>{this.props.children}</Animated.View>
       </TouchableWithoutFeedback>
-    )
+    );
   }
-};
+}
 
 export default TaskWrapper;

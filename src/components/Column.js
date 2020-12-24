@@ -1,19 +1,11 @@
 import React from 'react';
 
-import {
-  View,
-  // ListView,
-  FlatList,
-} from 'react-native';
+import { View, FlatList } from 'react-native';
 
-class Column extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      dataSource: this.dataSourceWithItems([]),
-    };
-  }
+class Column extends Component {
+  state = {
+    dataSource: this.dataSourceWithItems([]),
+  };
 
   componentDidMount() {
     this.props.rowRepository.addListener(
@@ -33,15 +25,10 @@ class Column extends React.Component {
 
   dataSourceWithItems(items) {
     return items;
-    // const ds = new ListView.DataSource({ rowHasChanged: this.rowHasChanged });
-    // let test = ds.cloneWithRows(items);
-    // console.log('dataSourceWithItems', test);
-    // return test;
   }
 
   dataSource() {
     let items = this.props.rowRepository.items(this.props.column.id());
-    // console.log('dataSource items', items);
     return this.dataSourceWithItems(items);
   }
 
