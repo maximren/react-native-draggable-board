@@ -2,7 +2,7 @@ import React from 'react';
 
 import { View, FlatList } from 'react-native';
 
-class Column extends Component {
+class Column extends React.Component {
   state = {
     dataSource: this.dataSourceWithItems([]),
   };

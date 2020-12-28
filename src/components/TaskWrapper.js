@@ -2,7 +2,7 @@ import React from 'react';
 
 import { TouchableWithoutFeedback, Animated } from 'react-native';
 
-class TaskWrapper extends Component {
+class TaskWrapper extends React.Component {
   render() {
     let style = [this.props.style];
     const { hidden } = this.props;

@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 
 const { width, height } = Dimensions.get('window');
-class Board extends Component {
+class Board extends React.Component {
   MAX_RANGE = 100;
   MAX_DEG = 30;
   TRESHOLD = 35;
