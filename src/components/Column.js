@@ -15,6 +15,14 @@ class Column extends React.Component {
     );
   }
 
+  componentDidUpdate() {
+    this.props.rowRepository.addListener(
+      this.props.column.id(),
+      'reload',
+      this.reload.bind(this),
+    );
+  }
+
   reload() {
     this.setState({ dataSource: this.dataSource() });
   }
