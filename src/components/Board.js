@@ -44,6 +44,10 @@ class Board extends React.Component {
     this.unsubscribeFromMovingMode();
   }
 
+  componentDidUpdate() {
+    this.unsubscribeFromMovingMode();
+  }
+
   onPanResponderMove(event, gesture) {
     const leftTopCornerX = this.state.startingX + gesture.dx;
     const leftTopCornerY = this.state.startingY + gesture.dy;
