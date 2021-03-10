@@ -132,8 +132,10 @@ class Board extends React.Component {
       this.onScrollingStarted();
       const scrollOffset = column.scrollOffset() + 70 * anOffset;
       this.props.rowRepository.setScrollOffset(column.id(), scrollOffset);
-
-      column.listView().scrollTo({ y: scrollOffset });
+      // TODO: Maybe investigate why listView sometimes not a function
+      if (column && column.listView() && column.listView === "function") {
+        column.listView().scrollTo({ y: scrollOffset });
+      }
     }
 
     this.props.rowRepository.move(draggedItem, this.x, this.y);
