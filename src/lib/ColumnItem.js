@@ -20,18 +20,7 @@ class ColumnItem {
 
   items() {
     let items = _(this._attributes.items).values();
-    // fake task is added as last because of the bug:
-    // https://github.com/facebook/react-native/issues/12014
-    const fake = new Item({
-      id: -2,
-      index: 100000,
-      columnId: this.id(),
-      row: { id: -2 },
-      hidden: true,
-      locked: true,
-      visible: false
-    });
-    return _(items).sortBy((item) => item.index()).concat([fake]);
+    return _(items).sortBy((item) => item.index());
   }
 
   visibleItems(columnId) {
