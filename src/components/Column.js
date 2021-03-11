@@ -165,7 +165,6 @@ class Column extends React.Component {
   render() {
     return (
       <View
-        style={{ flex: 1 }}
         ref={this.setColumnRef.bind(this)}
         onLayout={this.updateColumnWithLayout.bind(this)}
       >
